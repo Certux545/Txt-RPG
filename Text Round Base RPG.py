@@ -1,8 +1,11 @@
 #Text Round Based RPG
 #dies ist mein erster versuch ein Roundbased RPG zu erstellen
+from weapons import sword
+
 #intro
-def start():
-    print("-->-------    o   -------<--")
+def tutorial():
+    print("""-->-------    o   -------<--
+          """)
     print("Herzlich willkommen in der Kluft von Ragnar")
     input("drücke enter um fortzufaheren .....")
     if input("Willst du ein Tutorial?  ja/nein|") == "ja":
@@ -11,29 +14,41 @@ def start():
     else:
         main_menu()
 
+
 #Hauptmenü ist in arbeit
 def main_menu():
     global item_list
-    main_menu = input("suchen/missionen/rucksack/kampf|")
-    
+    main_menu = input("suchen/missionen/rucksack/kampf/?|")
+
+    #man sollte etwas finden
     if main_menu == "suchen":
         print("Du suchst und findest .....")
-        return main_menu
+        return main_menu()
+    
+    #zeigt später einmal die Missionen
     elif main_menu == "missionen":
         print("Hier würdest du deine Missionen sehen")
-        return main_menu
+        return main_menu()
+    
+    #Items usw.
     elif main_menu == "rucksack":
         frage = int(input("1. Waffen Rucksack/2. Item Rucksack"))
         if frage == 1:
             print(weapon_list)
-            return main_menu
+            return main_menu()
         elif frage == 2:
             print(item_list)
-            return main_menu
+            return main_menu()
         else:
-            return main_menu
+            return main_menu()
+        
+    #kämpft mit battle_system    
     elif main_menu == "kampf":
         battle_system()
+
+    #leitet einen ins Tutorial
+    elif main_menu == "?":
+        tutorial()
 
 #Item Rucksack
 def item_backpack():
@@ -63,7 +78,7 @@ def battle_system():
     if aktion == "angriff":
         attack = input(weapon_list)
         if attack == "Schwert":
-            enemy_health -= 2
+            enemy_health -= sword.damage
             print(f"Leben des Gegners {enemy_health}")
             #wenn der Gegner O health Erreicht hat der Spieler gewonnen 
             if enemy_health <= 0:
@@ -82,6 +97,7 @@ def battle_system():
     
     elif aktion == "flucht":
         print("Du bist entkommen.")
+        main_menu()
 
     elif aktion == "items":
         item_backpack()
@@ -109,4 +125,8 @@ def first_encounter():
 
 
 enemy()
-start()
+main_menu()
+
+
+#testen von classen
+#print (sword.damage)
