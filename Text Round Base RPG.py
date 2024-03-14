@@ -1,132 +1,124 @@
-#Text Round Based RPG
-#dies ist mein erster versuch ein Roundbased RPG zu erstellen
-from weapons import sword
+from weapons import *
+from items import *
+from enemy import *
 
-#intro
+
+
+# Variablen die für alles sichtbar sein müssen
+weapon_list = [sword.name, fist.name]
+item_list = []
+
+enemy_typ = ""
+enemy_health = 0
+enemy_item = ""
+
+# Intro
 def tutorial():
-    print("""-->-------    o   -------<--
-          """)
+    print("-->-------    o   -------<--")
     print("Herzlich willkommen in der Kluft von Ragnar")
-    input("drücke enter um fortzufaheren .....")
+    input("drücke enter um fortzufahren .....")
     if input("Willst du ein Tutorial?  ja/nein|") == "ja":
-        item_backpack()  # Rucksack nur einmal initialisieren
         first_encounter()
     else:
-        main_menu()
+        main()
 
-
-#Hauptmenü ist in arbeit
-def main_menu():
+# Hauptmenü
+def main():
+    global weapon_list
     global item_list
-    main_menu = input("suchen/missionen/rucksack/kampf/?|")
+    
+    while True:
+        main_menu = input("suchen/missionen/rucksack/kampf/?| ")
 
-    #man sollte etwas finden
-    if main_menu == "suchen":
-        print("Du suchst und findest .....")
-        return main_menu()
-    
-    #zeigt später einmal die Missionen
-    elif main_menu == "missionen":
-        print("Hier würdest du deine Missionen sehen")
-        return main_menu()
-    
-    #Items usw.
-    elif main_menu == "rucksack":
-        frage = int(input("1. Waffen Rucksack/2. Item Rucksack"))
-        if frage == 1:
-            print(weapon_list)
-            return main_menu()
-        elif frage == 2:
-            print(item_list)
-            return main_menu()
-        else:
-            return main_menu()
+        if main_menu == "suchen":
+            print("Du suchst und findest .....")
         
-    #kämpft mit battle_system    
-    elif main_menu == "kampf":
-        battle_system()
+        elif main_menu == "missionen":
+            print("Hier würdest du deine Missionen sehen")
+        
+        elif main_menu == "rucksack":
+            frage = int(input("1. Waffen Rucksack/2. Item Rucksack| "))
+            if frage == 1:
+                print(weapon_list)
+            elif frage == 2:
+                print(item_list)
+            else:
+                print("Ungültige Auswahl!")
+        
+        elif main_menu == "kampf":
+            battle_system()
 
-    #leitet einen ins Tutorial
-    elif main_menu == "?":
-        tutorial()
+        elif main_menu == "?":
+            tutorial()
 
-#Item Rucksack
+        else:
+            print("Ungültige Eingabe!")
+
+# Item Rucksack
 def item_backpack():
     global item_list
-    global weapon_list
-    item_list = []
-    weapon_list = ["Schwert", "Faust"]
+    print(item_list)
 
-#Gegner 
+# Gegner
 def enemy():
     global enemy_typ
     global enemy_health 
     global enemy_item
-    #der Gegner
     enemy_typ = "Wolf"
     enemy_health = 10
-    enemy_item = "Zahn"
-  
+    enemy_item = toth.name
 
+# Kampfsystem
 def battle_system():
-    global weapon_list
     global enemy_typ
     global enemy_health
 
-    aktion = input("angriff/flucht/items/reden|")
+    while True:
+        aktion = input("angriff/flucht/items/reden| ")
 
-    if aktion == "angriff":
-        attack = input(weapon_list)
-        if attack == "Schwert":
-            enemy_health -= sword.damage
-            print(f"Leben des Gegners {enemy_health}")
-            #wenn der Gegner O health Erreicht hat der Spieler gewonnen 
-            if enemy_health <= 0:
-                print("--------------------------------")
-                print(f"Du hast den {enemy_typ} besiegt")
-                print(f"Du erhältst {enemy_item}")
-                #fügt den Item_Rucksack das enemy_item hinzu
-                item_list.append(enemy_item)
-                main_menu()
+        if aktion == "angriff":
+            print(weapon_list)
+            attack = input()
 
+            if attack in weapon_list:
+                enemy_health -= sword.damage if attack == "Schwert" else fist.damage
+                print(f"Leben des Gegners {enemy_health}")
+
+                if enemy_health <= 0:
+                    print("--------------------------------")
+                    print(f"Du hast den {enemy_typ} besiegt")
+                    print(f"Du erhältst {enemy_item}")
+                    item_list.append(enemy_item)
+                    return main()
             else:
-                battle_system()
+                print("Ungültige Waffe!")
+
+        elif aktion == "flucht":
+            print("Du bist entkommen.")
+            return 
+
+        elif aktion == "items":
+            item_backpack()
+
+        elif aktion == "reden":
+            print(f"Der {enemy_typ} will nicht reden")
+
         else:
-            print("Ungültige Waffe!")
-            battle_system()
-    
-    elif aktion == "flucht":
-        print("Du bist entkommen.")
-        main_menu()
+            print("Ungültige Aktion!")
 
-    elif aktion == "items":
-        item_backpack()
-
-    elif aktion == "reden":
-        print(f"Der {enemy_typ} will nicht reden")
-        battle_system()
-
-    else:
-        print("Ungültige Aktion!")
-        battle_system()
-
-
-#die Erste begegnung/Tutorial
+# Die erste Begegnung/Tutorial
 def first_encounter():
-    frage = input("Hast du schon einmal Gekämpft?    ja/nein|")
+    frage = input("Hast du schon einmal gekämpft? ja/nein| ")
     if frage == "ja":
         print("Du scheinst dich ja gut auszukennen")
-        main_menu()
+        main()
     elif frage == "nein":
-        print("du begegnest einen Wolf")
+        print(f"Du begegnest einem {enemy_typ}")
         battle_system()
     else:
-        return first_encounter()
+        first_encounter()
 
-
+# Gegner initialisieren
 enemy()
-main_menu()
-
-
-#testen von classen
-#print (sword.damage)
+# Tutorial starten
+tutorial()
